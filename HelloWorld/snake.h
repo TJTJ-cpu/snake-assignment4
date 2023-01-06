@@ -1,40 +1,52 @@
 #pragma once
 #include "Play.h"
-#include <iostream>
-#include <string>
-#include <vector>
+#include <ctime>
 
-static int DISPLAY_WIDTH = 640;
-static int DISPLAY_HEIGHT = 360;
-static int DISPLAY_SCALE = 2;
-static unsigned int* snakePart;
-static int snakePartCount;
-static int fpsCounter = 0;
-
-
-void Test();
-void StepFrame();
-
-class Apple
+enum Heading
 {
+	North,
+	South,
+	East,
+	West
+};
+
+class SnakePart;
+
+class Snake
+{
+private:
+	Heading heading;
+	SnakePart* parts;
+	int numParts;
 public:
-	void DrawApple();
+	Snake();
+	~Snake();
+	void Draw();
+	void Handle();
+	void Move();
+	void AddPart();
+	void Update(float f);
+	//void Collide(Apple* apple);
 };
 
 class SnakePart
 {
-public:
-	void DrawSnakePart();
+private:
+	Point2D position;
+	Play::Colour colour = Play::cRed;
 
+public:
+	friend class Snake;
+	SnakePart();
+	SnakePart(int x, int y);
+	void Draw();
 };
 
-class Snake
+class Apple
 {
+private:
+	Point2D position;
 public:
+	Apple();
 	void Draw();
-	void Move();
-	
-
-
-
 };

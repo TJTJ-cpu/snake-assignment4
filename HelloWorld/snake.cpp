@@ -1,68 +1,93 @@
 #include "snake.h"
 
-//DISPLAY_WIDTH = 640;	640/2 = 320
-//DISPLAY_HEIGHT = 360;	360/2 = 180
-Apple* apple = new Apple{};
-SnakePart* snakepart = new SnakePart{};
 
-void Test()
+extern int frameCount;
+
+Snake::Snake()
 {
-	snakepart->DrawSnakePart();
-	apple->DrawApple();
-
-	delete apple;
-	delete snakepart;
+    heading = Heading::West;
+    numParts = 2;
+    this->parts = new SnakePart[numParts];
+    this->parts[0] = SnakePart(320, 180);
+    this->parts[1] = SnakePart(310, 180);
 }
 
-void StepFrame()
+Snake::~Snake()
 {
-
-}
-
-void Apple::DrawApple()
-{
-	int a = Play::RandomRollRange(0, 620);
-	int b = Play::RandomRollRange(0, 340);
-	Play::DrawCircle({ a,b }, 4, Play::cRed);
-}
-
-
-void SnakePart::DrawSnakePart()
-{
-	delete[] snakePart;
-	int d = 0;
-	for (int i = 0; i <= 1; i++)
-	{
-		int j = DISPLAY_WIDTH/2 + d;
-		int k = DISPLAY_HEIGHT/2;
-		int a = Play::RandomRollRange(0, 100);
-		int b = Play::RandomRollRange(0, 100);
-		int c = Play::RandomRollRange(0, 100);
-		Play::DrawCircle({j, k}, 4, Play::Colour(a, b, c));
-		d += 9;
-	}
-
-
+    delete[] this->parts;
 }
 
 void Snake::Draw()
 {
+    for (int i = 0; i < numParts; i++)
+    {
+        parts[i].Draw();
+    }
+}
 
+void Snake::Handle()
+{
+    if (Play::KeyPressed(VK_UP))
+    {
+        heading = Heading::North;
+    }
+    if (Play::KeyPressed(VK_DOWN))
+    {
+        heading = Heading::South;
+    }
+    if (Play::KeyPressed(VK_RIGHT))
+    {
+        heading = Heading::East;
+    }
+    if (Play::KeyPressed(VK_LEFT))
+    {
+        heading = Heading::West;
+    }
 }
 
 void Snake::Move()
 {
-	if (fpsCounter == 6)
-	{
-
-
-		fpsCounter = 0;
-	}
-
-
-
-
-	fpsCounter += 1;
+    for (int i = numParts - 1; i > 0; i--)
+    {
+        parts[i].position = parts[i - 1].position;
+    }
+    switch (heading)
+    {
+    case Heading::North:
+        parts[0].position.y -= 10;
+        break;
+    case Heading::South:
+        parts[0].position.y += 10;
+        break;
+    case Heading::East:
+        parts[0].position.x += 10;
+        break;
+    case Heading::West:
+        parts[0].position.x -= 10;
+        break;
+    }
 }
 
+void Snake::AddPart()
+{
+    numParts++;
+    SnakePart* newParts = new SnakePart[numParts];
+    for (int i = 0; i < numParts - 1; i++)
+    {
+        newParts[i] = parts[i];
+    }
+    newParts[numParts - 1] = parts[numParts - 2];
+    delete[] parts;
+    parts = newParts;
+}
 
+void Snake::Update(float time)
+{
+    if (frameCount % 6 == 0)
+    {
+        Move();
+    }
+    Handle();
+    Draw();
+    frameCount++;
+}
