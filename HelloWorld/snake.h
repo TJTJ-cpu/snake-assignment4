@@ -10,7 +10,10 @@ enum Heading
 	West
 };
 
+const int CloseProximityDistance = 10;
+
 class SnakePart;
+class Apple;
 
 class Snake
 {
@@ -26,7 +29,7 @@ public:
 	void Move();
 	void AddPart();
 	void Update(float f);
-	//void Collide(Apple* apple);
+	bool Collide(Apple* apple);
 };
 
 class SnakePart
@@ -37,8 +40,10 @@ private:
 
 public:
 	friend class Snake;
+	Point2D getPos() { return position; }
 	SnakePart();
 	SnakePart(int x, int y);
+	SnakePart(Point2D p);
 	void Draw();
 };
 
@@ -47,6 +52,8 @@ class Apple
 private:
 	Point2D position;
 public:
+	friend class Snake;
+	Point2D getPos() { return position; }
 	Apple();
 	void Draw();
 };

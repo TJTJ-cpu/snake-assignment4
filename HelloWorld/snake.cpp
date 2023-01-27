@@ -1,6 +1,6 @@
 #include "snake.h"
 
-
+extern Apple* apple;
 extern int frameCount;
 
 Snake::Snake()
@@ -70,15 +70,15 @@ void Snake::Move()
 
 void Snake::AddPart()
 {
-    numParts++;
-    SnakePart* newParts = new SnakePart[numParts];
-    for (int i = 0; i < numParts - 1; i++)
+    SnakePart* newParts = new SnakePart[numParts + 1];
+    for (int i = 0; i < numParts; i++)
     {
         newParts[i] = parts[i];
     }
-    newParts[numParts - 1] = parts[numParts - 2];
     delete[] parts;
     parts = newParts;
+    parts[numParts] = SnakePart(parts[numParts - 1].getPos());
+    numParts++;
 }
 
 void Snake::Update(float time)
@@ -91,3 +91,17 @@ void Snake::Update(float time)
     Draw();
     frameCount++;
 }
+
+bool Snake::Collide(Apple* apple)
+{
+    Point2D snakeHead = parts[0].getPos();
+    Point2D applePos = apple->getPos();
+    float distance = sqrt(pow(snakeHead.x - applePos.x, 2) + pow(snakeHead.y - applePos.y, 2));
+    if (distance <= CloseProximityDistance)
+    {
+        return true;
+    }
+    return false;
+}
+
+

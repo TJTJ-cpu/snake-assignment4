@@ -8,7 +8,7 @@ static int DISPLAY_HEIGHT = 360;
 static int DISPLAY_SCALE = 2;
 int frameCount = 0;
 Apple* apple = new Apple;
-Snake* snake = new Snake;
+Snake snake;
 
 // The entry point for a PlayBuffer program
 void MainGameEntry(PLAY_IGNORE_COMMAND_LINE)
@@ -22,7 +22,13 @@ bool MainGameUpdate(float elapsedTime)
 	Play::PresentDrawingBuffer();
 	Play::ClearDrawingBuffer(Play::cBlack);
 	apple->Draw();
-	snake->Update(elapsedTime);
+	snake.Update(elapsedTime);
+	if (snake.Collide(apple))
+	{
+		delete apple;
+		apple = new Apple;
+		snake.AddPart();
+	}
 	return Play::KeyDown(VK_ESCAPE);
 }
 
@@ -30,7 +36,6 @@ bool MainGameUpdate(float elapsedTime)
 int MainGameExit(void)
 {
 	delete apple;
-	delete snake;
 	Play::DestroyManager();
 	return PLAY_OK;
 }

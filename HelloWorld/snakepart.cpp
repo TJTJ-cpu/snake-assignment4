@@ -1,5 +1,20 @@
 #include "snake.h"
 
+Apple::Apple()
+{
+    srand(time(nullptr));
+    position.x = rand() % 640;
+    position.y = rand() % 320;
+}
+
+SnakePart::SnakePart(Point2D p)
+{
+    position = p;
+
+    const Play::Colour colors[] = { Play::cRed, Play::cGreen, Play::cBlue,
+        Play::cMagenta, Play::cCyan, Play::cYellow, Play::cOrange };
+    colour = colors[rand() % 7];
+}
 
 SnakePart::SnakePart(int x, int y) : position(x, y)
 {
@@ -22,17 +37,6 @@ void SnakePart::Draw()
 }
 
 
-
-
-
-
-
-Apple::Apple()
-{
-    srand(time(nullptr));
-    position.x = rand() % 640;
-    position.y = rand() % 320;
-}
 
 void Apple::Draw()
 {
